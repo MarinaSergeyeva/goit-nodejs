@@ -1,0 +1,29 @@
+{
+  "name": "02-express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarinaSergeyeva/goit-nodejs.git"
+  },
+  "author": "MarinaSergeyeva",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MarinaSergeyeva/goit-nodejs/issues"
+  },
+  "homepage": "https://github.com/MarinaSergeyeva/goit-nodejs#readme"
+}
