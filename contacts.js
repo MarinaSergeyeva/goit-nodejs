@@ -8,51 +8,59 @@ console.log("contactsPath", contactsPath);
 
 // TODO: задокументировать каждую функцию
 async function listContacts() {
-  const result = await fsPromise.readFile(
-    contactsPath,
-    "utf-8",
-    (err, data) => {
-      if (err) throw err;
-
-      return data;
-    }
-  );
-  return JSON.parse(result);
+  try {
+    const result = await fsPromise.readFile(
+      contactsPath,
+      "utf-8");
+      return JSON.parse(result)
+  } catch (err) {
+    console.log('err.message', err.message);
+    process.exit(1)
+  }
 }
 
-// async function listContacts() {
-//   return JSON.parse(await fsPromise.readFile(contactsPath, "utf-8"));
-// }
-
 async function getContactById(contactId) {
-  const result = await listContacts();
-  const userById = result.find((user) => user.id === contactId);
-
-  return userById;
+  try {
+    const result = await listContacts();
+    const userById = result.find((user) => user.id === contactId);
+    return userById;
+  } catch (err) {
+    console.log('err.message', err.message);
+    process.exit(1)
+    }
+  
 }
 
 async function removeContact(contactId) {
-  const data = await listContacts();
-  const userById = data.filter((user) => user.id !== contactId);
+  try {
+    const data = await listContacts();
+    const userById = data.filter((user) => user.id !== contactId);
+    await fsPromise.writeFile(contactsPath,JSON.stringify(userById))
+    return listContacts();
+  } catch (err) {
+    console.log('err.message', err.message);
+    process.exit(1)
+  }
 
-  return userById;
 }
 
 async function addContact(name, email, phone) {
-  const data = await listContacts();
-  const newUser = {
+  try {
+    const data = await listContacts();
+    const newUser = {
     id: data.length + 1,
     name,
     email,
     phone,
-  };
-
-  const newData = [...data, newUser];
-
-  await fsPromise.writeFile(contactsPath, JSON.stringify(newData), (err) => {
-    if (err) throw err;
-  });
-  return newData;
+    };
+    const newData = [...data, newUser];
+    await fsPromise.writeFile(contactsPath, JSON.stringify(newData));
+    return listContacts();
+  } catch (err) {
+    console.log('err.message', err.message);
+    process.exit(1)
+  }
+  
 }
 
 module.exports = { listContacts, getContactById, removeContact, addContact };
