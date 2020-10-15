@@ -7,8 +7,8 @@
   },
   {
     "id": 2,
-    "name": "Chaim Lewis",
-    "email": "dui.in@egetlacus.ca",
+    "name": "Alex",
+    "email": "dui2.in@egetlacus.ca",
     "phone": "(294) 840-6685"
   },
   {
@@ -56,6 +56,12 @@
   {
     "id": 10,
     "name": "Alec Howard",
+    "email": "Donec.elementum@scelerisquescelerisquedui.net",
+    "phone": "(748) 206-2688"
+  },
+  {
+    "id": 11,
+    "name": "Alec4 Howard",
     "email": "Donec.elementum@scelerisquescelerisquedui.net",
     "phone": "(748) 206-2688"
   }
