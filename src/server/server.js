@@ -1,13 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const contactRouter = require('./routes/contactRoutes');
+const contactRouter = require('../routes/contactRoutes');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const AppError = require('./utils/appError');
+const AppError = require('../utils/appError');
 const PORT = process.env.PORT || 3000;
-const globalErrorHandler = require('./controllers/errorController');
+const globalErrorHandler = require('../controllers/errorController');
 
 class CrudServer {
   constructor() {

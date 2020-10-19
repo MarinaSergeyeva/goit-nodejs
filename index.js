@@ -10,5 +10,5 @@
 //   console.log(`Server is listening on port ${PORT}...`);
 // });
 
-const { crudServer } = require('./server');
+const { crudServer } = require('./src/server/server');
 crudServer.start();
