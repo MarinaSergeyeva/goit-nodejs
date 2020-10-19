@@ -8,7 +8,6 @@ const morgan = require('morgan');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const server = express();
-// const PORT = process.env.PORT || 3000;
 const contactRouter = require('./routes/contactRoutes');
 
 // MIDDLEWARES
