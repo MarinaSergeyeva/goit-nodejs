@@ -45,7 +45,7 @@ async function removeContact(id) {
   const newContacts = contacts.filter(contact => contact.id !== id);
 
   await fsPromise.writeFile(contactsPath, JSON.stringify(newContacts));
-  return;
+  return id;
 }
 
 module.exports = {

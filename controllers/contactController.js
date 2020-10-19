@@ -72,11 +72,14 @@ exports.updateContact = catchAsync(async (req, res, next) => {
 
 exports.removeContact = catchAsync(async (req, res, next) => {
   const id = req.params.contactId * 1;
-  const contact = await contacts.removeContact(id);
+  const contact = await contacts.getById(id);
 
   if (!contact) {
     return next(new AppError(`No contact found with that ID`, 404));
   }
+
+  const removedContact = await contacts.removeContact(id);
+
   res.json({
     status: 'success',
     message: 'contact deleted',
