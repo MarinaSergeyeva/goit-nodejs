@@ -9,7 +9,6 @@ const {
   updateContact,
   removeContact,
   checkID,
-  checkBody,
 } = require('../controllers/contactController');
 
 const userSchema = Joi.object({
@@ -26,10 +25,7 @@ const changeUserSchema = Joi.object({
 
 router.param('contactId', checkID);
 
-router
-  .route('/')
-  .get(getAllContacts)
-  .post(validate(userSchema), checkBody, addContact);
+router.route('/').get(getAllContacts).post(validate(userSchema), addContact);
 
 router
   .route('/:contactId')

@@ -8,7 +8,7 @@ const morgan = require('morgan');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const server = express();
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 3000;
 const contactRouter = require('./routes/contactRoutes');
 
 // MIDDLEWARES
@@ -27,13 +27,5 @@ server.all('*', (req, res, next) => {
 });
 
 server.use(globalErrorHandler);
-
-// START
-server.listen(PORT, err => {
-  if (err) {
-    return console.log('Something bad happened', err);
-  }
-  console.log(`Server is listening on port ${PORT}...`);
-});
 
 module.exports = server;
