@@ -10,7 +10,7 @@ exports.checkID = catchAsync(async (req, res, next, val) => {
   if (id > contactsList.length) {
     res.status(404).json({
       status: 'fail',
-      message: 'Not found',
+      message: 'ID Not found',
     });
     return;
   }
