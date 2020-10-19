@@ -21,9 +21,9 @@ server.use(express.json());
 server.use('/api/contacts', contactRouter);
 
 // ERRORS
-// server.all('*', (req, res, next) => {
-//   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
-// });
+server.all('*', (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
 
 server.use(globalErrorHandler);
 
