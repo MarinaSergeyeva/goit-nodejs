@@ -17,16 +17,16 @@ exports.checkID = catchAsync(async (req, res, next, val) => {
   next();
 });
 
-exports.checkBody = (req, res, next) => {
-  if (!req.body.name || !req.body.email || !req.body.phone) {
-    res.status(400).json({
-      status: 'fail',
-      message: 'Missing fields',
-    });
-    return;
-  }
-  next();
-};
+// exports.checkBody = (req, res, next) => {
+//   if (!req.body.name || !req.body.email || !req.body.phone) {
+//     res.status(400).json({
+//       status: 'fail',
+//       message: 'Missing fields',
+//     });
+//     return;
+//   }
+//   next();
+// };
 
 exports.getAllContacts = catchAsync(async (req, res, next) => {
   const contactsList = await contacts.listContacts();
@@ -66,9 +66,9 @@ exports.addContact = catchAsync(async (req, res, next) => {
 });
 
 exports.updateContact = catchAsync(async (req, res, next) => {
-  if (Object.keys(req.body).length === 0) {
-    return next(new AppError(`missing body fields`, 400));
-  }
+  // if (Object.keys(req.body).length === 0) {
+  //   return next(new AppError(`missing body fields`, 400));
+  // }
 
   const id = req.params.contactId * 1;
   const contact = await contacts.updateContact(id, req.body);
