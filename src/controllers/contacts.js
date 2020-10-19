@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { promises: fsPromise } = fs;
 
-const contactsPath = `${__dirname}/../db/contacts.json`;
+const contactsPath = `${__dirname}/../../db/contacts.json`;
 
 async function listContacts() {
   const contacts = await fsPromise.readFile(contactsPath, 'utf-8');
