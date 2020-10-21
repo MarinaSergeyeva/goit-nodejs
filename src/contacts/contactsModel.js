@@ -4,16 +4,16 @@ const contactSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      requires: true,
+      required: true,
     },
     email: {
       type: String,
-      requires: true,
+      required: true,
       unique: true,
     },
     phone: {
       type: String,
-      requires: true,
+      required: true,
     },
   },
   { versionKey: false },
