@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const contactRouter = require('./contacts/contactRoutes');
+const userRouter = require('./users/userRoutes');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -59,6 +60,7 @@ class CrudServer {
 
   initServerRouters() {
     this.server.use('/api/contacts', contactRouter);
+    this.server.use('/api/auth', userRouter);
   }
 
   initErrorHandling() {
