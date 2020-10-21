@@ -30,14 +30,19 @@ class CrudServer {
   }
 
   async initDatabase() {
-    mongoose.set('debug', true);
-    await mongoose.connect(process.env.DATABASE, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: true,
-      useCreateIndex: true,
-    });
-    console.log('Database has been connected');
+    try {
+      mongoose.set('debug', true);
+      await mongoose.connect(process.env.DATABASE, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: true,
+        useCreateIndex: true,
+      });
+      console.log('Database has been connected');
+    } catch (err) {
+      console.log('Something bad happend while connection to DB', err);
+      process.exit(1);
+    }
   }
 
   initMiddlewares() {
