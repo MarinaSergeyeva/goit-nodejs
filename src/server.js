@@ -1,22 +1,24 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const contactRouter = require('../routes/contactRoutes');
+const contactRouter = require('./contacts/contactRoutes');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const AppError = require('../utils/appError');
+const AppError = require('./errors/appError');
 const PORT = process.env.PORT || 3000;
-const globalErrorHandler = require('../controllers/errorController');
+const globalErrorHandler = require('./errors/errorController');
+
+const mongoose = require('mongoose');
 
 class CrudServer {
   constructor() {
     this.server = null;
   }
 
-  start() {
+  async start() {
     this.initServer();
-    // this.initDatabase();
+    await this.initDatabase();
     this.initMiddlewares();
     this.initServerRouters();
     this.initErrorHandling();
@@ -27,10 +29,25 @@ class CrudServer {
     this.server = express();
   }
 
+  async initDatabase() {
+    mongoose.set('debug', true);
+    await mongoose.connect(process.env.DATABASE, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: true,
+      useCreateIndex: true,
+    });
+    console.log('Database has been connected');
+  }
+
   initMiddlewares() {
     this.server.use(cors({ origin: 'http://localhost:3000' }));
     if (process.env.NODE_ENV === 'development') {
       this.server.use(morgan('dev'));
+    }
+
+    if (process.env.NODE_ENV !== 'development') {
+      this.server.use(morgan('combined'));
     }
     this.server.use(express.json());
   }

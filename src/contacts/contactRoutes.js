@@ -3,13 +3,12 @@ const Joi = require('joi');
 const { validate } = require('../helpers/validate');
 const router = express.Router();
 const {
-  getAllContacts,
-  addContact,
-  getById,
-  updateContact,
-  removeContact,
-  checkID,
-} = require('../controllers/contactController');
+  getContactsController,
+  getContactByIdController,
+  addContactController,
+  updateContactController,
+  deleteContactController,
+} = require('./contactController');
 
 const userSchema = Joi.object({
   name: Joi.string().required(),
@@ -23,14 +22,15 @@ const changeUserSchema = Joi.object({
   phone: Joi.string(),
 });
 
-router.param('contactId', checkID);
-
-router.route('/').get(getAllContacts).post(validate(userSchema), addContact);
+router
+  .route('/')
+  .get(getContactsController)
+  .post(validate(userSchema), addContactController);
 
 router
   .route('/:contactId')
-  .get(getById)
-  .patch(validate(changeUserSchema), updateContact)
-  .delete(removeContact);
+  .get(getContactByIdController)
+  .patch(validate(changeUserSchema), updateContactController)
+  .delete(deleteContactController);
 
 module.exports = router;
