@@ -9,6 +9,7 @@ const {
   updateContactController,
   deleteContactController,
 } = require('./contactController');
+const { protect } = require('../auth/authController');
 
 const userSchema = Joi.object({
   name: Joi.string().required(),
@@ -24,7 +25,7 @@ const changeUserSchema = Joi.object({
 
 router
   .route('/')
-  .get(getContactsController)
+  .get(protect, getContactsController)
   .post(validate(userSchema), addContactController);
 
 router

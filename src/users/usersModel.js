@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please provide a valid password'],
       minlength: 8,
+      select: false,
     },
     passwordConfirm: {
       type: String,
@@ -47,17 +48,35 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword,
+) {
+  const result = await bcrypt.compare(candidatePassword, userPassword);
+  return result;
+};
+
 class UserModel {
   constructor() {
     this.db = mongoose.model('User', userSchema);
   }
 
-  signup = async (req, res, next) => {
+  signup = async userInfo => {
+    const { email, password, passwordConfirm } = userInfo;
+
     return await this.db.create({
-      email: req.body.email,
-      password: req.body.password,
-      passwordConfirm: req.body.passwordConfirm,
+      email,
+      password,
+      passwordConfirm,
     });
+  };
+
+  login = async ({ email }) => {
+    return await this.db.findOne({ email }).select(`+password`);
+  };
+
+  getAllUsers = async () => {
+    return await this.db.find();
   };
 }
 

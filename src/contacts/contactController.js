@@ -6,6 +6,7 @@ const getContactsController = catchAsync(async (req, res) => {
   const contacts = await ContactModel.getContacts();
   res.status(200).json({
     status: 'success',
+    results: contacts.length,
     data: {
       contacts,
     },

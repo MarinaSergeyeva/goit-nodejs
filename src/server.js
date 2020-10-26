@@ -56,11 +56,19 @@ class CrudServer {
       this.server.use(morgan('combined'));
     }
     this.server.use(express.json());
+
+    this.server.use((req, res, next) => {
+      req.requestTime = new Date().toISOString();
+      // console.log('req.headers', req.headers);
+
+      next();
+    });
   }
 
   initServerRouters() {
     this.server.use('/api/contacts', contactRouter);
     this.server.use('/api/auth', userRouter);
+    this.server.use('/api/users', userRouter);
   }
 
   initErrorHandling() {
