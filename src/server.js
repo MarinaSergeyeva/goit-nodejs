@@ -66,9 +66,9 @@ class CrudServer {
   }
 
   initServerRouters() {
-    this.server.use('/api/contacts', contactRouter);
-    this.server.use('/api/auth', userRouter);
-    this.server.use('/api/users', userRouter);
+    this.server.use('/api/v1/contacts', contactRouter);
+    this.server.use('/api/v1/auth', userRouter);
+    this.server.use('/api/v1/users', userRouter);
   }
 
   initErrorHandling() {

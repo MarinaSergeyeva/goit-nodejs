@@ -7,7 +7,7 @@ const {
   deleteUser,
 } = require('../users/userController');
 const { signUpController, loginController } = require('../auth/authController');
-const { route } = require('../contacts/contactRoutes');
+// const { route } = require('../contacts/contactRoutes');
 
 const router = express.Router();
 

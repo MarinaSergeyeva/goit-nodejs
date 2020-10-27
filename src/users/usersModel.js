@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema(
         message: 'Passwords are not the same',
       },
     },
+    passwordChangedAt: Date,
     subscription: {
       type: String,
       enum: ['free', 'pro', 'premium'],
@@ -56,6 +57,13 @@ userSchema.methods.correctPassword = async function (
   return result;
 };
 
+userSchema.methods.changePasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    console(this.passwordChangedAt, JWTTimestamp);
+  }
+  return false;
+};
+
 class UserModel {
   constructor() {
     this.db = mongoose.model('User', userSchema);
@@ -77,6 +85,10 @@ class UserModel {
 
   getAllUsers = async () => {
     return await this.db.find();
+  };
+
+  getUserById = async id => {
+    return await this.db.findById(id);
   };
 }
 
