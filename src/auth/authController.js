@@ -5,7 +5,6 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../errors/appError');
 
 const signToken = id => {
-  console.log('object', process.env.JWT_EXPIRES_IN);
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
@@ -62,9 +61,9 @@ const protect = catchAsync(async (req, res, next) => {
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-  const freshUser = await User.getUserById(decoded.id);
+  const currentUser = await User.getUserById(decoded.id);
 
-  if (!freshUser) {
+  if (!currentUser) {
     return next(
       new AppError(
         'The user belonging to the token does no longer exist.',
@@ -72,6 +71,15 @@ const protect = catchAsync(async (req, res, next) => {
       ),
     );
   }
+
+  if (currentUser.changePasswordAfter(decoded.iat)) {
+    return next(
+      new AppError('User recently changed password! Please log in again.', 401),
+    );
+  }
+
+  req.user = currentUser;
+
   next();
 });
 

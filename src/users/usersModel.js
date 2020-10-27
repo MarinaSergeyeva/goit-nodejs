@@ -59,7 +59,12 @@ userSchema.methods.correctPassword = async function (
 
 userSchema.methods.changePasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
-    console(this.passwordChangedAt, JWTTimestamp);
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10,
+    );
+
+    return JWTTimestamp < changedTimestamp;
   }
   return false;
 };
@@ -70,12 +75,13 @@ class UserModel {
   }
 
   signup = async userInfo => {
-    const { email, password, passwordConfirm } = userInfo;
+    const { email, password, passwordConfirm, passwordChangedAt } = userInfo;
 
     return await this.db.create({
       email,
       password,
       passwordConfirm,
+      passwordChangedAt,
     });
   };
 
