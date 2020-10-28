@@ -9,7 +9,7 @@ const {
   updateContactController,
   deleteContactController,
 } = require('./contactController');
-const { protect } = require('../auth/authController');
+const { protect, restrictTo } = require('../auth/authController');
 
 const userSchema = Joi.object({
   name: Joi.string().required(),
@@ -32,6 +32,6 @@ router
   .route('/:contactId')
   .get(getContactByIdController)
   .patch(validate(changeUserSchema), updateContactController)
-  .delete(deleteContactController);
+  .delete(protect, restrictTo('admin', 'moderator'), deleteContactController);
 
 module.exports = router;

@@ -11,6 +11,11 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       validate: [validator.isEmail, 'Please provide a valid email'],
     },
+    role: {
+      type: String,
+      enum: ['user', 'moderator', 'admin'],
+      default: 'user',
+    },
     password: {
       type: String,
       required: [true, 'Please provide a valid password'],
@@ -75,14 +80,7 @@ class UserModel {
   }
 
   signup = async userInfo => {
-    const { email, password, passwordConfirm, passwordChangedAt } = userInfo;
-
-    return await this.db.create({
-      email,
-      password,
-      passwordConfirm,
-      passwordChangedAt,
-    });
+    return await this.db.create(userInfo);
   };
 
   login = async ({ email }) => {
