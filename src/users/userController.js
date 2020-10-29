@@ -3,7 +3,7 @@ const catchAsync = require('../utils/catchAsync');
 
 const getAllUsersController = catchAsync(async (req, res, next) => {
   const users = await User.getAllUsers();
-  res.status(200).json({
+  res.json({
     status: 'success',
     results: users.length,
     data: {
@@ -12,28 +12,50 @@ const getAllUsersController = catchAsync(async (req, res, next) => {
   });
 });
 
-const getUserById = catchAsync(async (req, res, next) => {
+const getUserByIdController = catchAsync(async (req, res, next) => {
   res.status(500).json({
     status: 'error',
     message: 'This route is not yet defined!',
   });
 });
 
-const createUser = catchAsync(async (req, res, next) => {
+const getCurrentUserController = catchAsync(async (req, res, next) => {
+  const { id } = req.user;
+  const user = await User.getUserById(id);
+
+  if (!user) {
+    return next(new AppError(`No user found with that ID`, 404));
+  }
+
+  res.json({
+    status: 'success',
+    user: {
+      email: user.email,
+      subscription: user.subscription,
+    },
+  });
+
+  // res.status(500).json({
+  //   status: 'error',
+  //   message: 'This route is not yet defined!',
+  // });
+});
+
+const createUserController = catchAsync(async (req, res, next) => {
   res.status(500).json({
     status: 'error',
     message: 'This route is not yet defined!',
   });
 });
 
-const updateUser = catchAsync(async (req, res, next) => {
+const updateUserController = catchAsync(async (req, res, next) => {
   res.status(500).json({
     status: 'error',
     message: 'This route is not yet defined!',
   });
 });
 
-const deleteUser = catchAsync(async (req, res, next) => {
+const deleteUserController = catchAsync(async (req, res, next) => {
   res.status(500).json({
     status: 'error',
     message: 'This route is not yet defined!',
@@ -42,8 +64,9 @@ const deleteUser = catchAsync(async (req, res, next) => {
 
 module.exports = {
   getAllUsersController,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser,
+  getUserByIdController,
+  getCurrentUserController,
+  createUserController,
+  updateUserController,
+  deleteUserController,
 };

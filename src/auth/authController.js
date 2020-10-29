@@ -9,18 +9,33 @@ const signToken = id => {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+    ),
+    httpOnly: true,
+  };
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-const signUpController = catchAsync(async (req, res, next) => {
-  const newUser = await User.signup(req.body);
-  const token = signToken(newUser._id);
+  res.cookie('jwt', token, cookieOptions);
 
-  res.status(201).json({
+  user.password = undefined;
+
+  res.status(statusCode).json({
     status: 'success',
     token,
     data: {
-      user: newUser,
+      user,
     },
   });
+};
+
+const signUpController = catchAsync(async (req, res, next) => {
+  const newUser = await User.signup(req.body);
+
+  createSendToken(newUser, 201, res);
 });
 
 const loginController = catchAsync(async (req, res, next) => {
@@ -36,12 +51,29 @@ const loginController = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect email or password', 401));
   }
 
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  // const token = signToken(user._id);
+  createSendToken(user, res.statusCode, res);
+
+  // res.json({
+  //   status: 'success',
+  //   token,
+  //   user: {
+  //     email: user.email,
+  //     subscription: user.subscription,
+  //   },
+  // });
 });
+
+const logoutController = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+
+  res.status(204).json({
+    status: 'No content',
+  });
+};
 
 const protect = catchAsync(async (req, res, next) => {
   let token;
@@ -58,7 +90,7 @@ const protect = catchAsync(async (req, res, next) => {
       new AppError('You are not logged in! Please log in to get access.', 401),
     );
   }
-
+  console.log('token in authController', token);
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   const currentUser = await User.getUserById(decoded.id);
@@ -79,7 +111,6 @@ const protect = catchAsync(async (req, res, next) => {
   }
 
   req.user = currentUser;
-
   next();
 });
 
@@ -95,9 +126,16 @@ const restrictTo = (...roles) => {
   };
 };
 
+const getCurrentUserController = catchAsync(async (req, res, next) => {
+  const user = await User.getUserById(req.user._id);
+  next();
+});
+
 module.exports = {
   signUpController,
   loginController,
+  logoutController,
+  getCurrentUserController,
   protect,
   restrictTo,
 };

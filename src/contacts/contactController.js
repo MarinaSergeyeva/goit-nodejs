@@ -4,7 +4,7 @@ const AppError = require('../errors/appError.js');
 
 const getContactsController = catchAsync(async (req, res) => {
   const contacts = await ContactModel.getContacts();
-  res.status(200).json({
+  res.json({
     status: 'success',
     results: contacts.length,
     data: {
@@ -21,7 +21,7 @@ const getContactByIdController = catchAsync(async (req, res, next) => {
     return next(new AppError(`No contact found with that ID`, 404));
   }
 
-  res.status(200).json({
+  res.json({
     status: 'success',
     contact,
   });
