@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const contactSchema = new mongoose.Schema(
   {
@@ -18,6 +19,8 @@ const contactSchema = new mongoose.Schema(
   },
   { versionKey: false },
 );
+
+contactSchema.plugin(mongoosePaginate);
 
 class ContactModel {
   constructor() {
@@ -44,6 +47,22 @@ class ContactModel {
 
   async deleteContact(id, contact) {
     return await this.db.findByIdAndRemove(id);
+  }
+
+  async contactsPagination() {
+    const options = {
+      page: 1,
+      limit: 10,
+      collation: {
+        locale: 'en',
+      },
+    };
+
+    return await this.db
+      .paginate({}, options, function (err, result) {
+        result.docs;
+      })
+      .then({});
   }
 }
 

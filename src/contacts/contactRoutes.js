@@ -8,6 +8,7 @@ const {
   addContactController,
   updateContactController,
   deleteContactController,
+  getContactsWithPaination,
 } = require('./contactController');
 const { protect, restrictTo } = require('../auth/authController');
 
@@ -27,6 +28,8 @@ router
   .route('/')
   .get(protect, getContactsController)
   .post(validate(userSchema), addContactController);
+
+router.route('/').get(protect, getContactsWithPaination);
 
 router
   .route('/:contactId')

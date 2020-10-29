@@ -61,10 +61,15 @@ const deleteContactController = catchAsync(async (req, res, next) => {
   });
 });
 
+const getContactsWithPaination = catchAsync(async (req, res, next) => {
+  console.log('pagination', req.params);
+});
+
 module.exports = {
   getContactsController,
   getContactByIdController,
   addContactController,
   updateContactController,
   deleteContactController,
+  getContactsWithPaination,
 };
