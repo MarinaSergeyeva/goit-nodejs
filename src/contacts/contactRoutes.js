@@ -8,7 +8,7 @@ const {
   addContactController,
   updateContactController,
   deleteContactController,
-  getContactsWithPaination,
+  getContactsWithPagination,
 } = require('./contactController');
 const { protect, restrictTo } = require('../auth/authController');
 
@@ -26,15 +26,13 @@ const changeUserSchema = Joi.object({
 
 router
   .route('/')
-  .get(protect, getContactsController)
-  .post(validate(userSchema), addContactController);
-
-router.route('/').get(protect, getContactsWithPaination);
+  .get(protect, getContactsWithPagination)
+  .post(protect, validate(userSchema), addContactController);
 
 router
   .route('/:contactId')
-  .get(getContactByIdController)
-  .patch(validate(changeUserSchema), updateContactController)
+  .get(protect, getContactByIdController)
+  .patch(protect, validate(changeUserSchema), updateContactController)
   .delete(protect, restrictTo('admin', 'moderator'), deleteContactController);
 
 module.exports = router;

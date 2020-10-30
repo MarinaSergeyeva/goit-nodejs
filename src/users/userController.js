@@ -1,8 +1,25 @@
+const AppError = require('../errors/appError');
 const User = require('../users/usersModel');
 const catchAsync = require('../utils/catchAsync');
 
 const getAllUsersController = catchAsync(async (req, res, next) => {
-  const users = await User.getAllUsers();
+  let users;
+  let options = {
+    page: req.query.page,
+    limit: req.query.limit,
+    pagination: true,
+  };
+  if (req.query.sub) {
+    options = {
+      pagination: false,
+    };
+    users = await (await User.getAllUsers(options)).filter(user => {
+      if (user.subscription === req.query.sub) {
+        return user;
+      }
+    });
+  } else users = await User.getAllUsers(options);
+
   res.json({
     status: 'success',
     results: users.length,
@@ -34,11 +51,6 @@ const getCurrentUserController = catchAsync(async (req, res, next) => {
       subscription: user.subscription,
     },
   });
-
-  // res.status(500).json({
-  //   status: 'error',
-  //   message: 'This route is not yet defined!',
-  // });
 });
 
 const createUserController = catchAsync(async (req, res, next) => {
@@ -49,9 +61,19 @@ const createUserController = catchAsync(async (req, res, next) => {
 });
 
 const updateUserController = catchAsync(async (req, res, next) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
+  const id = req.user._id;
+  const user = await User.updateUserInfo(id);
+
+  if (!user) {
+    return next(new AppError(`No contact found with that ID`, 404));
+  }
+
+  const updatedUser = await User.updateUserInfo(id, req.body);
+
+  res.json({
+    status: 'success',
+    message: 'Subscription changed successfully!',
+    user: updatedUser,
   });
 });
 

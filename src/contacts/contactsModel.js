@@ -49,20 +49,10 @@ class ContactModel {
     return await this.db.findByIdAndRemove(id);
   }
 
-  async contactsPagination() {
-    const options = {
-      page: 1,
-      limit: 10,
-      collation: {
-        locale: 'en',
-      },
-    };
-
-    return await this.db
-      .paginate({}, options, function (err, result) {
-        result.docs;
-      })
-      .then({});
+  async contactsPagination(options) {
+    return await this.db.paginate({}, options, function (err, result) {
+      return result.docs;
+    });
   }
 }
 

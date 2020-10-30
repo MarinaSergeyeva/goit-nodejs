@@ -61,8 +61,19 @@ const deleteContactController = catchAsync(async (req, res, next) => {
   });
 });
 
-const getContactsWithPaination = catchAsync(async (req, res, next) => {
-  console.log('pagination', req.params);
+const getContactsWithPagination = catchAsync(async (req, res, next) => {
+  const options = {
+    page: req.query.page,
+    limit: req.query.limit,
+  };
+  const contacts = await ContactModel.contactsPagination(options);
+  res.json({
+    status: 'success',
+    results: contacts.length,
+    data: {
+      contacts,
+    },
+  });
 });
 
 module.exports = {
@@ -71,5 +82,5 @@ module.exports = {
   addContactController,
   updateContactController,
   deleteContactController,
-  getContactsWithPaination,
+  getContactsWithPagination,
 };

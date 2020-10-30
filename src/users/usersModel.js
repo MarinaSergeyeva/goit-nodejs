@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const userSchema = new mongoose.Schema(
   {
@@ -74,6 +75,8 @@ userSchema.methods.changePasswordAfter = function (JWTTimestamp) {
   return false;
 };
 
+userSchema.plugin(mongoosePaginate);
+
 class UserModel {
   constructor() {
     this.db = mongoose.model('User', userSchema);
@@ -87,12 +90,18 @@ class UserModel {
     return await this.db.findOne({ email }).select(`+password`);
   };
 
-  getAllUsers = async () => {
-    return await this.db.find();
+  getAllUsers = async options => {
+    return await this.db.paginate({}, options, function (err, result) {
+      return result.docs;
+    });
   };
 
   getUserById = async id => {
     return await this.db.findById(id);
+  };
+
+  updateUserInfo = async (id, info) => {
+    return await this.db.findByIdAndUpdate(id, info, { new: true });
   };
 }
 

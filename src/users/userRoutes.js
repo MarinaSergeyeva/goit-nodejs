@@ -11,12 +11,15 @@ const { protect } = require('../auth/authController');
 
 const router = express.Router();
 
-router.route('/').get(getAllUsersController).post(createUserController);
+router
+  .route('/')
+  .get(protect, getAllUsersController)
+  .post(createUserController)
+  .patch(protect, updateUserController);
 router
   .route('/users/:id')
-  .get(getUserByIdController)
-  .patch(updateUserController)
-  .delete(deleteUserController);
+  .get(protect, getUserByIdController)
+  .delete(protect, deleteUserController);
 router.route('/current').get(protect, getCurrentUserController);
 
 module.exports = router;
