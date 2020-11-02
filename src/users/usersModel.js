@@ -63,17 +63,17 @@ userSchema.methods.correctPassword = async function (
   return result;
 };
 
-userSchema.methods.changePasswordAfter = function (JWTTimestamp) {
-  if (this.passwordChangedAt) {
-    const changedTimestamp = parseInt(
-      this.passwordChangedAt.getTime() / 1000,
-      10,
-    );
+// userSchema.methods.changePasswordAfter = function (JWTTimestamp) {
+//   if (this.passwordChangedAt) {
+//     const changedTimestamp = parseInt(
+//       this.passwordChangedAt.getTime() / 1000,
+//       10,
+//     );
 
-    return JWTTimestamp < changedTimestamp;
-  }
-  return false;
-};
+//     return JWTTimestamp < changedTimestamp;
+//   }
+//   return false;
+// };
 
 userSchema.plugin(mongoosePaginate);
 

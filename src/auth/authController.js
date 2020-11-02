@@ -1,4 +1,4 @@
-const { promisify } = require('util');
+// const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../users/usersModel');
 const catchAsync = require('../utils/catchAsync');
@@ -42,7 +42,7 @@ const loginController = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return next(new AppError('Please provide email and password', 400));
+    return next(new AppError('Please provide email and password', 401));
   }
 
   const user = await User.login({ email });
@@ -83,6 +83,7 @@ const protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+    // return token;
   }
 
   if (!token) {
@@ -90,7 +91,9 @@ const protect = catchAsync(async (req, res, next) => {
       new AppError('You are not logged in! Please log in to get access.', 401),
     );
   }
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+  console.log('decoded', decoded);
 
   const currentUser = await User.getUserById(decoded.id);
 
@@ -103,11 +106,11 @@ const protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  if (currentUser.changePasswordAfter(decoded.iat)) {
-    return next(
-      new AppError('User recently changed password! Please log in again.', 401),
-    );
-  }
+  // if (currentUser.changePasswordAfter(decoded.iat)) {
+  //   return next(
+  //     new AppError('User recently changed password! Please log in again.', 401),
+  //   );
+  // }
 
   req.user = currentUser;
   next();
