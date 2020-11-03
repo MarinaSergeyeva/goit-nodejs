@@ -1,12 +1,14 @@
 const express = require('express');
+
 const {
+  uploadUserPhoto,
   getAllUsersController,
   getUserByIdController,
   getCurrentUserController,
   createUserController,
   updateUserController,
   deleteUserController,
-} = require('../users/userController');
+} = require('./userController');
 const { protect } = require('../auth/authController');
 
 const router = express.Router();
@@ -21,5 +23,6 @@ router
   .get(protect, getUserByIdController)
   .delete(protect, deleteUserController);
 router.route('/current').get(protect, getCurrentUserController);
+router.route('/images').patch(protect, uploadUserPhoto);
 
 module.exports = router;

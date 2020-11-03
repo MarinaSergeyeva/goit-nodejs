@@ -1,6 +1,6 @@
 const express = require('express');
 const Joi = require('joi');
-const { validate } = require('../helpers/validate');
+const { validate } = require('../../helpers/validate');
 const router = express.Router();
 const {
   getContactsController,

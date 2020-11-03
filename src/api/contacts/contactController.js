@@ -1,5 +1,5 @@
 const ContactModel = require('./contactsModel');
-const catchAsync = require('../utils/catchAsync');
+const catchAsync = require('../../utils/catchAsync');
 const AppError = require('../errors/appError.js');
 
 const getContactsController = catchAsync(async (req, res) => {

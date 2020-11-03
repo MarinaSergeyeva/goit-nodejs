@@ -1,15 +1,16 @@
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const morgan = require('morgan');
-const contactRouter = require('./contacts/contactRoutes');
-const userRouter = require('./users/userRoutes');
-const authRouter = require('./auth/authRoutes');
+const contactRouter = require('./api/contacts/contactRoutes');
+const userRouter = require('./api/users/userRoutes');
+const authRouter = require('./api/auth/authRoutes');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const AppError = require('./errors/appError');
+const AppError = require('./api/errors/appError');
 const PORT = process.env.PORT || 3000;
-const globalErrorHandler = require('./errors/errorController');
+const globalErrorHandler = require('./api/errors/errorController');
 
 const mongoose = require('mongoose');
 
@@ -60,7 +61,6 @@ class CrudServer {
 
     this.server.use((req, res, next) => {
       req.requestTime = new Date().toISOString();
-      // console.log('req.headers', req.headers);
 
       next();
     });
@@ -70,6 +70,11 @@ class CrudServer {
     this.server.use('/api/v1/contacts', contactRouter);
     this.server.use('/api/v1/auth', authRouter);
     this.server.use('/api/v1/users', userRouter);
+    this.server.use(
+      '/',
+      userRouter,
+      express.static(path.resolve(__dirname, 'public')),
+    );
   }
 
   initErrorHandling() {

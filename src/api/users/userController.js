@@ -1,6 +1,32 @@
+const multer = require('multer');
 const AppError = require('../errors/appError');
-const User = require('../users/usersModel');
-const catchAsync = require('../utils/catchAsync');
+const User = require('./usersModel');
+const catchAsync = require('../../utils/catchAsync');
+
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'src/public/images');
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split('/')[1];
+    cb(null, `user-${req.user._id}-${Date.now()}.${ext}`);
+  },
+});
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image! Please upload only images.', 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+const uploadUserPhoto = upload.single('avatarURL');
 
 const getAllUsersController = catchAsync(async (req, res, next) => {
   let users;
@@ -61,6 +87,8 @@ const createUserController = catchAsync(async (req, res, next) => {
 });
 
 const updateUserController = catchAsync(async (req, res, next) => {
+  console.log('req.file', req.file);
+  console.log('req.body', req.body);
   const id = req.user._id;
   const user = await User.updateUserInfo(id);
 
@@ -85,6 +113,7 @@ const deleteUserController = catchAsync(async (req, res, next) => {
 });
 
 module.exports = {
+  uploadUserPhoto,
   getAllUsersController,
   getUserByIdController,
   getCurrentUserController,

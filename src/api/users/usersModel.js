@@ -43,6 +43,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       // required: [true, 'User must have token'],
     },
+    avatarURL: String,
   },
   { versionKey: false },
 );
