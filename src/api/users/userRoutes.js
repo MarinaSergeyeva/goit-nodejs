@@ -8,6 +8,7 @@ const {
   createUserController,
   updateUserController,
   deleteUserController,
+  updateUserAvatarController,
 } = require('./userController');
 const { protect } = require('../auth/authController');
 
@@ -22,6 +23,7 @@ router
   .route('/users/:id')
   .get(protect, getUserByIdController)
   .delete(protect, deleteUserController);
+router.route('/users/avatars').patch(protect, updateUserAvatarController);
 router.route('/current').get(protect, getCurrentUserController);
 router.route('/images').patch(protect, uploadUserPhoto);
 

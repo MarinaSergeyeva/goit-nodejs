@@ -70,11 +70,7 @@ class CrudServer {
     this.server.use('/api/v1/contacts', contactRouter);
     this.server.use('/api/v1/auth', authRouter);
     this.server.use('/api/v1/users', userRouter);
-    this.server.use(
-      '/',
-      userRouter,
-      express.static(path.resolve(__dirname, 'public')),
-    );
+    this.server.use('/', userRouter, express.static('public'));
   }
 
   initErrorHandling() {
