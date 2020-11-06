@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema(
       enum: ['free', 'pro', 'premium'],
       default: 'free',
     },
-    token: {
+    verificationToken: {
       type: String,
       // required: [true, 'User must have token'],
     },
@@ -101,8 +101,19 @@ class UserModel {
     return await this.db.findById(id);
   };
 
+  getUserByToken = async token => {
+    return await this.db.findOne(token);
+  };
+
   updateUserInfo = async (id, info) => {
     return await this.db.findByIdAndUpdate(id, info, { new: true });
+  };
+
+  updateUserToken = async verificationToken => {
+    return await this.db.findOneAndUpdate(
+      { verificationToken },
+      { verificationToken: null },
+    );
   };
 }
 

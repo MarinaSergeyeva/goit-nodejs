@@ -39,6 +39,22 @@ const getUserByIdController = catchAsync(async (req, res, next) => {
   });
 });
 
+const getUserByTokenController = catchAsync(async (req, res, next) => {
+  const { token } = req.params;
+  const user = await User.getUserByToken(token);
+
+  if (!user) {
+    return next(new AppError(`No user found with that token`, 404));
+  }
+
+  res.json({
+    status: 'success',
+    data: {
+      user,
+    },
+  });
+});
+
 const getCurrentUserController = catchAsync(async (req, res, next) => {
   const { id } = req.user;
   const user = await User.getUserById(id);
@@ -64,8 +80,6 @@ const createUserController = catchAsync(async (req, res, next) => {
 });
 
 const updateUserController = catchAsync(async (req, res, next) => {
-  console.log('req.file', req.file);
-  console.log('req.body', req.body);
   const id = req.user._id;
   const user = await User.updateUserInfo(id);
 
@@ -108,6 +122,7 @@ module.exports = {
   uploadUserPhoto,
   getAllUsersController,
   getUserByIdController,
+  getUserByTokenController,
   getCurrentUserController,
   createUserController,
   updateUserController,

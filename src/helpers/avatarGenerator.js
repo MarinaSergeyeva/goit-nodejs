@@ -22,7 +22,6 @@ const avatarGenerator = async userId => {
 };
 
 function normalizeImageminPath(path) {
-  console.log('path', path);
   return path.replace(/\\/g, '/');
 }
 

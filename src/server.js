@@ -38,7 +38,7 @@ class CrudServer {
       await mongoose.connect(process.env.DATABASE, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        useFindAndModify: true,
+        useFindAndModify: false,
         useCreateIndex: true,
       });
       console.log('Database has been connected');

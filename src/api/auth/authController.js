@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { uuid } = require('uuidv4');
 const User = require('../users/usersModel');
 const catchAsync = require('../../utils/catchAsync');
 const AppError = require('../errors/appError');
@@ -33,8 +34,8 @@ const createSendToken = (user, statusCode, res) => {
 };
 
 const signUpController = catchAsync(async (req, res, next) => {
-  console.log('req.body', req.body);
-  const newUser = await User.signup(req.body);
+  const verificationToken = uuid();
+  const newUser = await User.signup({ ...req.body, verificationToken });
 
   const avatar = await avatarGenerator(newUser._id);
   const avatarURL = `http://localhost:${process.env.PORT}/images/${avatar}`;
@@ -92,6 +93,8 @@ const protect = catchAsync(async (req, res, next) => {
     // return token;
   }
 
+  if (req.params.token) token = req.params.token;
+
   if (!token) {
     return next(
       new AppError('You are not logged in! Please log in to get access.', 401),
@@ -138,6 +141,20 @@ const getCurrentUserController = catchAsync(async (req, res, next) => {
   next();
 });
 
+const verifyUser = catchAsync(async (req, res, next) => {
+  const { verificationToken } = req.params;
+  const verifiedUser = await User.updateUserToken(verificationToken);
+
+  if (!verifiedUser) {
+    return next(new AppError('User not found', 404));
+  }
+
+  return res.json({
+    status: 'success',
+    user: verifiedUser,
+  });
+});
+
 module.exports = {
   signUpController,
   loginController,
@@ -145,4 +162,5 @@ module.exports = {
   getCurrentUserController,
   protect,
   restrictTo,
+  verifyUser,
 };
