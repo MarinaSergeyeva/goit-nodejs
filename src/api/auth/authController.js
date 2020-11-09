@@ -4,6 +4,7 @@ const User = require('../users/usersModel');
 const catchAsync = require('../../utils/catchAsync');
 const AppError = require('../errors/appError');
 const avatarGenerator = require('../../helpers/avatarGenerator');
+const { verificationSender } = require('../emailSender/emailSender');
 
 const signToken = id => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -35,12 +36,16 @@ const createSendToken = (user, statusCode, res) => {
 
 const signUpController = catchAsync(async (req, res, next) => {
   const verificationToken = uuid();
+  const { email } = req.body;
+  console.log('req.body', req.body);
   const newUser = await User.signup({ ...req.body, verificationToken });
 
   const avatar = await avatarGenerator(newUser._id);
   const avatarURL = `http://localhost:${process.env.PORT}/images/${avatar}`;
 
   await User.updateUserInfo(newUser._id, { avatarURL });
+
+  await verificationSender(email, verificationToken);
 
   createSendToken(newUser, 201, res);
 });
